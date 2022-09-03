@@ -33,13 +33,18 @@ class _HomePageState extends State<HomePage> {
   List<Widget> pages = [
     BlocProvider(
       create: (context) => EventBloc(
-          eventRepository: EventRepository(httpClient: context.read<Dio>()))..add(FetchEvent()),
+        eventRepository: EventRepository(
+          httpClient: context.read<Dio>(),
+        ),
+        accountRepository: AccountRepository(httpClient: context.read<Dio>())
+      )..add(FetchEvent(userId: context.read<AuthenticationBloc>().state.user!.id)),
       child: const SchedulePage(),
     ),
     BlocProvider(
       create: (context) => AccountBloc(
-        accountRepository: AccountRepository(httpClient: context.read<Dio>())
-      )..add(GetUserInfo(userId: context.read<AuthenticationBloc>().state.user!.id)),
+          accountRepository: AccountRepository(httpClient: context.read<Dio>()))
+        ..add(GetUserInfo(
+            userId: context.read<AuthenticationBloc>().state.user!.id)),
       child: const AccountPage(),
     ),
     const SettingPage(),

@@ -21,7 +21,7 @@ class AccountItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Material(
-        elevation: 1,
+        elevation: 5,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),

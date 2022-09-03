@@ -13,6 +13,18 @@ class $AssetsImageGen {
   /// File path: assets/image/edit.png
   AssetGenImage get edit => const AssetGenImage('assets/image/edit.png');
 
+  /// File path: assets/image/icon_logout.png
+  AssetGenImage get iconLogout =>
+      const AssetGenImage('assets/image/icon_logout.png');
+
+  /// File path: assets/image/icon_register.png
+  AssetGenImage get iconRegister =>
+      const AssetGenImage('assets/image/icon_register.png');
+
+  /// File path: assets/image/icon_unregister.png
+  AssetGenImage get iconUnregister =>
+      const AssetGenImage('assets/image/icon_unregister.png');
+
   /// File path: assets/image/schedule_logo.png
   AssetGenImage get scheduleLogo =>
       const AssetGenImage('assets/image/schedule_logo.png');

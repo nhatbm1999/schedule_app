@@ -26,7 +26,8 @@ class SchedulePage extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: () async => context.read<EventBloc>().add(FetchEvent()),
+          onRefresh: () async => context.read<EventBloc>().add(FetchEvent(
+              userId: context.read<AuthenticationBloc>().state.user!.id)),
           child: BlocBuilder<EventBloc, EventState>(
             builder: (context, state) {
               switch (state.status) {
@@ -36,7 +37,12 @@ class SchedulePage extends StatelessWidget {
                   );
                 case LoadStatus.failure:
                   return NetworkErrorWidget(
-                      retry: () => context.read<EventBloc>().add(FetchEvent()));
+                      retry: () => context.read<EventBloc>().add(FetchEvent(
+                          userId: context
+                              .read<AuthenticationBloc>()
+                              .state
+                              .user!
+                              .id)));
                 case LoadStatus.success:
                   List<EventModel> _getDataSource() {
                     final List<EventModel> events = <EventModel>[];
@@ -60,19 +66,27 @@ class SchedulePage extends StatelessWidget {
                     initialSelectedDate: DateTime.now(),
                     showNavigationArrow: true,
                     onTap: (CalendarTapDetails details) async {
-                      String addressName;
-                      // List<Placemark> placemarks =
-                      //     await placemarkFromCoordinates(
-                      //         details.appointments![0].eventLocationLatitude, details.appointments![0].eventLocationLongitude);
-                      // Placemark place = placemarks[1];
-                      // addressName =
-                      //     '${place.street}, ${place.subAdministrativeArea}, ${place.administrativeArea}';
+                      String addressName = '';
+                      if (details.appointments!.isNotEmpty) {
+                        List<Placemark> placemarks =
+                            await placemarkFromCoordinates(
+                                details.appointments![0].eventLocationLatitude,
+                                details
+                                    .appointments![0].eventLocationLongitude);
+                        Placemark place = placemarks[1];
+                        addressName =
+                            '${place.street}, ${place.subAdministrativeArea}, ${place.administrativeArea}';
+                      }
 
                       details.appointments!.isNotEmpty &&
                               details.targetElement ==
                                   CalendarElement.appointment
-                          ? Navigator.of(context).push(ScheduleDetailPage.route(
-                              details.appointments![0]))
+                          ? Navigator.of(context)
+                              .push(ScheduleDetailPage.route(
+                                  details.appointments![0], addressName, state.user!))
+                              .then((value) => context
+                                  .read<EventBloc>()
+                                  .add(FetchEvent(userId: state.user!.id)))
                           : null;
                     },
                     todayHighlightColor: CommonTheme().mainColor,

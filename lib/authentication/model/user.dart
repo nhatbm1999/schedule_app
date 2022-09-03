@@ -32,7 +32,7 @@ class User extends Equatable {
       email: json['email'],
       phone: json['phone'],
       userName: json['username'],
-      avatar: json['avatar'],
+      avatar: json['avatar'] != null ? json['avatar'] : '',
       listEvents: events
     );
   }
